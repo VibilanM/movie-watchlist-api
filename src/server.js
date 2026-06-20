@@ -1,7 +1,34 @@
 import express from "express";
+import { config } from "dotenv";
 import movieRoutes from "./routes/movieRoutes.js";
+import { connectDB, disconnectDB } from "./config/db.js";
+
+config();
+connectDB();
 
 const app = express();
+
+process.on("unhandledRejection", (err) => {
+    console.error("Unhandled rejection: ", err);
+    server.close(async () => {
+        await disconnectDB();
+        process.exit(1);
+    });
+});
+
+process.on("uncaughtException", async (err) => {
+    console.error("Uncaught exception: ", err);
+    await disconnectDB();
+    process.exit(1);
+});
+
+process.on("SIGTERM", async () => {
+    console.log("SIGTERM received. Shutting down gracefully.");
+    server.close(async () => {
+        await disconnectDB();
+        process.exit(0);
+    });
+});
 
 app.get("/", (req, res) => {
     res.json({
