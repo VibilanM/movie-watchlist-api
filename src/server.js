@@ -40,6 +40,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/movies", movieRoutes);
+app.use("/auth", authRoutes);
 
 const PORT = 5001;
 
