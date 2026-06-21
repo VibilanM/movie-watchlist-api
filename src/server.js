@@ -1,12 +1,15 @@
 import express from "express";
 import { config } from "dotenv";
 import movieRoutes from "./routes/movieRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
 import { connectDB, disconnectDB } from "./config/db.js";
 
 config();
 connectDB();
 
 const app = express();
+
+app.use(express.json());
 
 process.on("unhandledRejection", (err) => {
     console.error("Unhandled rejection: ", err);
