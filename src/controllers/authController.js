@@ -1,5 +1,6 @@
 import { prisma } from "../config/db.js";
 import bcrypt from "bcryptjs";
+import { generateToken } from "../utils/generateToken.js";
 
 const register = async (req, res) => {
     const { name, email, password } = req.body;
@@ -35,4 +36,37 @@ const register = async (req, res) => {
     });
 };
 
-export { register };
+const login = async (req, res) => {
+    const { email, password } = req.body;
+
+    const user = await prisma.user.findUnique({
+        where: { email: email }
+    });
+
+    if (!user) {
+        return res.status(401).json({
+            error: "Invalid credentials."
+        });
+    }
+
+    const isValidPassword = await bcrypt.compare(password, user.password);
+
+    if (!isValidPassword) {
+        return res.status(401).json({
+            error: "Invalid credentials."
+        });
+    }
+
+    const token = generateToken(user.id, res);
+
+    res.status(200).json({
+        status: "success",
+        data: {
+            id: user.id,
+            name: user.name,
+            email: user.email
+        }
+    });
+};
+
+export { register, login };
