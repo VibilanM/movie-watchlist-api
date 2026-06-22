@@ -69,4 +69,15 @@ const login = async (req, res) => {
     });
 };
 
-export { register, login };
+const logout = async (req, res) => {
+    res.cookie("accessToken", "", {
+        expires: new Date(0),
+        httpOnly: true,
+    });
+
+    res.status(200).json({
+        status: "success"
+    });
+};
+
+export { register, login, logout };
