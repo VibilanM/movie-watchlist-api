@@ -28,7 +28,7 @@ const addToWatchlist = async (req, res) => {
         data: {
             userId: userId,
             movieId: movieId,
-            status: status,
+            status: status || "PLANNED",
             rating: rating,
             notes: notes
         }
@@ -36,3 +36,5 @@ const addToWatchlist = async (req, res) => {
 
     res.status(201).json(watchlistItem);
 };
+
+export { addToWatchlist };
